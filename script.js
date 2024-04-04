@@ -32,7 +32,7 @@ function validate(nameValue, urlValue) {
     return false;
   }
   if (urlValue.match(regex)) {
-    alert('match');
+    // alert('match');
   }
   if (!urlValue.match(regex)) {
     alert('Plese provide a valid web address');
@@ -42,21 +42,93 @@ function validate(nameValue, urlValue) {
   return true;
 }
 
+// Build Bookmarks DOM
+function buildBookmarks(){
+  // Build Items
+  bookmarks.forEach((bookmark) => {
+    const {name, url} = bookmark;
+    console.log({name, url});
+    // item
+    const item = document.createElement('div');
+    item.classList.add('item');
+    // Close icon
+    const closeIcon = document.createElement('i');
+    closeIcon.classList.add('fas', 'fa-times');
+    closeIcon.setAttribute('title', 'Delete Bookmark');
+    closeIcon.setAttribute('onclick', `deleteBookmark('${url}')`);
+    // Fabicon / Link Container
+    const linkInfo = document.createElement('div');
+    linkInfo.classList.add('name');
+
+    // Favicon
+    const favicon = document.createElement('img');
+    favicon.setAttribute('src', `https://s2.googleusercontent.com/s2/favicons?domain=${url}`);
+    favicon.setAttribute('alt', 'Favicon');
+    // Link
+    const link = document.createElement('a');
+    link.setAttribute('href', `${url}`);
+    link.setAttribute('target', `_blank`);
+    link.textContent = name;
+    // Append to bookmarks container
+    linkInfo.append(favicon, link);
+    item.append(closeIcon, linkInfo);
+    bookmarkContainer.appendChild(item);
+
+  });
+}
+
+// Fetch Bookmars
+function fetchBookmarks(){
+  // Get bookmarks from localStorage if available
+  if(localStorage.getItem('bookmarks')){
+    bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
+  } else {
+    // create bookmarks array in localStorage
+    bookmarks =[
+      {
+        name: 'Jacinto Design',
+        url: 'https://jacinto.design',
+      }
+    ];
+    localStorage.setItem('bookmarks', JSON.stringify('Fetch bookmarks :',bookmarks));
+  }
+ buildBookmarks();
+}
+
+// Delete Bookmark
+function deleteBookmarks(url){
+
+}
+
 // Handle Date from Form
 function storBookmark(e) {
   e.preventDefault();
-  console.log(e);
+  // console.log(e);
   const nameValue = websiteNameEl.value;
   let urlValue = websiteURL.value;
   if (!urlValue.includes('http://') && !urlValue.includes('https://')) {
     urlValue = `https://${urlValue}`;
   }
-  console.log("Name Value: ", nameValue, "  URL: ", urlValue)
+  // console.log("Name Value: ", nameValue, "  URL: ", urlValue)
   if(!validate(nameValue, urlValue)){
 
     return false;
-  }
+  };
+  const bookmark = {
+    name:nameValue,
+    url:urlValue,
+  };
+  bookmarks.push(bookmark);
+  // console.log(JSON.stringify(bookmarks));
+  localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+  fetchBookmarks();
+  bookmarkForm.reset();
+  websiteNameEl.focus();
+
 }
 
 // Event Listener
 bookmarkForm.addEventListener('submit', storBookmark);
+
+// on load, Fetch bookmark function
+fetchBookmarks();

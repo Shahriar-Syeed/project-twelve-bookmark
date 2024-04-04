@@ -7,6 +7,9 @@ const bookmarkUrlEl = document.getElementById('bookmark-url');
 const bookmarkContainer = document.getElementById('bookmark-container');
 const websiteNameEl = document.getElementById('website-name');
 const websiteURL = document.getElementById('website-url');
+
+let bookmarks = [];
+
 // Show Modal, Focus on Input
 
 function showModal() {

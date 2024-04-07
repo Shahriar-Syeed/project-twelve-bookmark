@@ -27,7 +27,7 @@ window.addEventListener('click', (e) => (e.target === modal ? modal.classList.re
 function validate(nameValue, urlValue) {
   const expression = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g;
   const regex = new RegExp(expression);
-  if(!nameValue || !urlValue){
+  if (!nameValue || !urlValue) {
     alert('Please submit values for both fields.');
     return false;
   }
@@ -43,11 +43,13 @@ function validate(nameValue, urlValue) {
 }
 
 // Build Bookmarks DOM
-function buildBookmarks(){
+function buildBookmarks() {
+  // Remove all bookmark element
+  bookmarkContainer.textContent='';
   // Build Items
   bookmarks.forEach((bookmark) => {
-    const {name, url} = bookmark;
-    console.log({name, url});
+    const { name, url } = bookmark;
+    console.log({ name, url });
     // item
     const item = document.createElement('div');
     item.classList.add('item');
@@ -73,31 +75,39 @@ function buildBookmarks(){
     linkInfo.append(favicon, link);
     item.append(closeIcon, linkInfo);
     bookmarkContainer.appendChild(item);
-
   });
 }
 
 // Fetch Bookmars
-function fetchBookmarks(){
+function fetchBookmarks() {
   // Get bookmarks from localStorage if available
-  if(localStorage.getItem('bookmarks')){
+  if (localStorage.getItem('bookmarks')) {
     bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
   } else {
     // create bookmarks array in localStorage
-    bookmarks =[
+    bookmarks = [
       {
         name: 'Jacinto Design',
         url: 'https://jacinto.design',
-      }
+      },
     ];
-    localStorage.setItem('bookmarks', JSON.stringify('Fetch bookmarks :',bookmarks));
+    localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
   }
- buildBookmarks();
+  // console.log(bookmarks);
+  buildBookmarks();
 }
 
 // Delete Bookmark
-function deleteBookmarks(url){
+function deleteBookmarks(url) {
   console.log('delete URL', url);
+  bookmarks.forEach((bookmark, i) => {
+    if (bookmark.url === url) {
+      bookmarks.splice(i, 1);
+    }
+  });
+  // Update bookmarks array in localStorage, re-populate DOM
+  localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+  fetchBookmarks();
 }
 
 // Handle Date from Form
@@ -110,13 +120,13 @@ function storBookmark(e) {
     urlValue = `https://${urlValue}`;
   }
   // console.log("Name Value: ", nameValue, "  URL: ", urlValue)
-  if(!validate(nameValue, urlValue)){
+  if (!validate(nameValue, urlValue)) {
 
     return false;
   };
   const bookmark = {
-    name:nameValue,
-    url:urlValue,
+    name: nameValue,
+    url: urlValue,
   };
   bookmarks.push(bookmark);
   // console.log(JSON.stringify(bookmarks));

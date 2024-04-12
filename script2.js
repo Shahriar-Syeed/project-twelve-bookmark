@@ -8,7 +8,7 @@ const bookmarkContainer = document.getElementById('bookmark-container');
 const websiteNameEl = document.getElementById('website-name');
 const websiteURL = document.getElementById('website-url');
 
-let bookmarks = [];
+let bookmarks = {};
 
 // Show Modal, Focus on Input
 
@@ -45,10 +45,10 @@ function validate(nameValue, urlValue) {
 // Build Bookmarks DOM
 function buildBookmarks() {
   // Remove all bookmark element
-  bookmarkContainer.textContent='';
+  bookmarkContainer.textContent = '';
   // Build Items
-  bookmarks.forEach((bookmark) => {
-    const { name, url } = bookmark;
+  Object.keys(bookmarks).forEach((id) => {
+    const { name, url } = bookmarks[id];
     console.log({ name, url });
     // item
     const item = document.createElement('div');
@@ -57,18 +57,18 @@ function buildBookmarks() {
     const closeIcon = document.createElement('i');
     closeIcon.classList.add('fas', 'fa-times');
     closeIcon.setAttribute('title', 'Delete Bookmark');
-    closeIcon.setAttribute('onclick', `deleteBookmarks('${url}')`);
+    closeIcon.setAttribute('onclick', `deleteBookmarks('${id}')`);
     // Fabicon / Link Container
     const linkInfo = document.createElement('div');
     linkInfo.classList.add('name');
 
     // Favicon
     const favicon = document.createElement('img');
-    favicon.setAttribute('src', `https://s2.googleusercontent.com/s2/favicons?domain=${id}`);
+    favicon.setAttribute('src', `https://s2.googleusercontent.com/s2/favicons?domain=${url}`);
     favicon.setAttribute('alt', 'Favicon');
     // Link
     const link = document.createElement('a');
-    link.setAttribute('href', `${id}`);
+    link.setAttribute('href', `${url}`);
     link.setAttribute('target', `_blank`);
     link.textContent = name;
     // Append to bookmarks container
@@ -85,12 +85,11 @@ function fetchBookmarks() {
     bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
   } else {
     // create bookmarks array in localStorage
-    bookmarks = [
-      {
+    const id = `http://jaccinto.design`
+    bookmarks[id] ={
         name: 'Jacinto Design',
         url: 'https://jacinto.design',
       },
-    ];
     localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
   }
   // console.log(bookmarks);
@@ -98,13 +97,13 @@ function fetchBookmarks() {
 }
 
 // Delete Bookmark
-function deleteBookmarks(url) {
-  console.log('delete URL', url);
-  bookmarks.forEach((bookmark, i) => {
-    if (bookmark.url === url) {
-      bookmarks.splice(i, 1);
+function deleteBookmarks(id) {
+  console.log('delete URL', id);
+ 
+    if (bookmarks[id]) {
+      delete bookmarks[id];
     }
-  });
+
   // Update bookmarks array in localStorage, re-populate DOM
   localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
   fetchBookmarks();
@@ -128,7 +127,7 @@ function storBookmark(e) {
     name: nameValue,
     url: urlValue,
   };
-  bookmarks.push(bookmark);
+  bookmarks[urlValue] = bookmark;
   // console.log(JSON.stringify(bookmarks));
   localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
   fetchBookmarks();

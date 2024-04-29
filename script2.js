@@ -147,3 +147,6 @@ console.log("shshriar");
 console.log("shshriar");
 console.log("shshriar");
 console.log("shshriar");
+console.log("s");
+console.log("sh");
+console.log("s");

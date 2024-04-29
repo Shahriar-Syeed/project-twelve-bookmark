@@ -142,4 +142,8 @@ bookmarkForm.addEventListener('submit', storBookmark);
 // on load, Fetch bookmark function
 fetchBookmarks();
 
+console.log("shs");
+console.log("shshriar");
+console.log("shshriar");
+console.log("shshriar");
 console.log("shshriar");
